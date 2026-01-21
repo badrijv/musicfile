@@ -1,0 +1,52 @@
+
+---
+- name: Install and start Apache HTTPD on EC2
+  hosts: web
+  become: true
+  gather_facts: yes
+
+  vars:
+    http_port: 80
+    index_content: |
+      <html>
+      <head><title>Deployed by Ansible via Jenkins</title></head>
+      <body>
+        <h1>Success 🎉</h1>
+        <p>This page was deployed by Ansible from Jenkins Pipeline.</p>
+      </body>
+      </html>
+
+  tasks:
+    - name: Ensure package cache is up to date (Amazon Linux 2023)
+      ansible.builtin.command: dnf -y makecache
+      args:
+        warn: false
+      changed_when: false
+
+    - name: Install Apache HTTPD
+      ansible.builtin.package:
+        name: httpd
+        state: present
+
+    - name: Ensure httpd is enabled and started
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Deploy index.html
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: "{{ index_content }}"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Open firewall port if firewalld is present (safe to ignore if absent)
+      ansible.builtin.shell: |
+        if systemctl is-active --quiet firewalld; then
+          firewall-cmd --permanent --add-service=http && firewall-cmd --reload
+        fi
+      args:
+        warn: false
+      changed_when: false
