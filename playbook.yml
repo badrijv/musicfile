@@ -1,5 +1,5 @@
 
-- hosts: web
+- hosts: local
   become: yes
   tasks:
     - name: Install Apache
