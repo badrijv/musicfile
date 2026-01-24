@@ -17,7 +17,13 @@ environment {
             steps {
                     sh """
                         ansible all -i inventory.ini -m ping
-                        whoami
+                        
+echo ">>> Effective Jenkins user:"
+      whoami
+      id
+      echo ">>> Testing passwordless sudo:"
+      sudo -n true && echo "OK (sudo works without password)" || echo "FAIL (sudo requires password)"
+
                     """
             }
         }
