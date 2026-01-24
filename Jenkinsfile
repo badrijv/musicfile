@@ -17,6 +17,7 @@ environment {
             steps {
                     sh """
                         ansible all -i inventory.ini -m ping
+                        whoami
                     """
             }
         }
