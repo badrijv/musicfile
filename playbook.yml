@@ -1,11 +1,16 @@
 - hosts: local
-  become: yes
+  gather_facts: true
+  become: false   # <— do not elevate during facts
+
   tasks:
-    - name: Detect correct Apache package
+    - name: Detect correct Apache package (uses facts, no sudo)
       set_fact:
         apache_pkg: "{{ 'apache2' if ansible_facts.os_family == 'Debian' else 'httpd' }}"
 
-    - name: Install Apache locally on EC2
+    - name: Install Apache locally on EC2 (needs sudo)
+      become: true            # <— elevate only here
+      become_method: sudo
       package:
         name: "{{ apache_pkg }}"
         state: present
+``
