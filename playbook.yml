@@ -3,6 +3,6 @@
   tasks:
     - name: Create test directory
       file:
-        path: "/tmp/jenkins_ansible_test"
+        path: "/temp/jenkins_ansible_test1234"
         state: directory
         mode: '0755'
