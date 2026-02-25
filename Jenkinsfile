@@ -16,13 +16,16 @@ environment {
         stage('Ping EC2') {
             steps {
                     sh """
+                        echo ">>> Effective Jenkins user:"
+                        whoami
+                        id
+                        echo ">>> Testing passwordless sudo:"
+                        sudo -n true && echo "OK (sudo works without password)" || echo "FAIL (sudo requires password)"
+                        
+                        
                         ansible all -i inventory.ini -m ping
                         
-echo ">>> Effective Jenkins user:"
-      whoami
-      id
-      echo ">>> Testing passwordless sudo:"
-      sudo -n true && echo "OK (sudo works without password)" || echo "FAIL (sudo requires password)"
+
 
                     """
             }
