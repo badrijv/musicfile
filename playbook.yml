@@ -13,4 +13,3 @@
       package:
         name: "{{ apache_pkg }}"
         state: present
-``
